@@ -1,20 +1,25 @@
-from urllib import urlencode as uencode, urlopen as uopen
+from urllib import urlencode as uencode, urlopen as uopen, unquote
 from BeautifulSoup import BeautifulSoup
+from pync import Notifier
+
 
 subjects = [
                 "Elec*",
-                "EECE",
-                "EE",
-#                "Engineering",
+                "Engineering",
                 "EECS",
-                "ECE"
+                "Computer Science",
+                "CS",
+                "HCI",
+                "Human computer",
+                "ICME"
 ]
 schools = [
                 # only three schools left!
-                "Caltech",
-                "Cal*Inst*Tech",
-                "Harvard",
-                "Michigan"
+                "Stanford",
+                "Berkeley",
+                "Toronto",
+                "Carnegie",
+                "Columbia"
 ]
 searchstring = "(" + "|".join(subjects) + ") (" + "|".join(schools) + ")"
 gradcafe = "http://thegradcafe.com/survey/index.php?" + uencode({'q': searchstring}) + "&t=m&pp=250"
@@ -104,18 +109,16 @@ def enablenotifications():
     fhandle.close()
 
 def notify(ar, arraw):
-    from os import system
-    system("espeak -s 155 -a 200 " + ar  + " &")
-    #from easygui import msgbox
-    #msgbox(msg=arraw, title="New GradCafe Post", ok_button='OK')# == 'OK':
-    #    disablenotifications()
+    Notifier.notify(arraw, open=unquote(gradcafe))
+    disablenotifications()
 
 def notifywrapper(resultstonotify):
+    print resultstonotify
     strspeak, strshow = "",""
     for resulttonotify in resultstonotify:
-        if "Accepted" in resulttonotify: rawmsg = "Admission to " + resulttonotify.split("|")[0]
-        elif "Rejected" in resulttonotify: rawmsg = "Rejection from " + resulttonotify.split("|")[0]
-        elif "Wait listed" in resulttonotify: rawmsg = "Wait listed at " + resulttonotify.split("|")[0]
+        if "Accepted" in resulttonotify: rawmsg = "Admission to " + resulttonotify.split("|")[0] + resulttonotify.split("|")[1]
+        elif "Rejected" in resulttonotify: rawmsg = "Rejection from " + resulttonotify.split("|")[0] + resulttonotify.split("|")[1]
+        elif "Wait listed" in resulttonotify: rawmsg = "Wait listed at " + resulttonotify.split("|")[0] + resulttonotify.split("|")[1]
         else: continue
         modmsg = rawmsg.replace(" ", "\ ").replace("(","").replace(")","")
         strspeak += modmsg + "\ \ \ "
@@ -125,7 +128,7 @@ def notifywrapper(resultstonotify):
     
 
 if __name__ == "__main__":
-
+    
     from termcolor import colored
     resulttosave = ""
     lastresult = getlastresult()
@@ -138,7 +141,6 @@ if __name__ == "__main__":
                 break
              
             resultstonotify.append(result)
-
     saveresult(resulttosave)
     
     # notify user if there's a new entry or if notifications are still enabled
