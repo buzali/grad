@@ -109,7 +109,7 @@ def enablenotifications():
     fhandle.close()
 
 def notify(ar, arraw):
-    Notifier.notify(arraw, open=unquote(gradcafe))
+    Notifier.notify(arraw, open=unquote(gradcafe), title="TheGradCafe")
     disablenotifications()
 
 def notifywrapper(resultstonotify):
