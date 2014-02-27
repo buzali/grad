@@ -5,12 +5,11 @@ from pync import Notifier
 
 subjects = [
                 "Elec*",
-                "Engineering",
                 "EECS",
-                "Computer Science",
+                "\"Computer Science\"",
                 "CS",
                 "HCI",
-                "Human computer",
+                "\"Human computer\"",
                 "ICME"
 ]
 schools = [
